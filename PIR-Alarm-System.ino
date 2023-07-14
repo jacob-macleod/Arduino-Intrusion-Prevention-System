@@ -1,32 +1,55 @@
-int led = 13;                // the pin that the LED is atteched to
-int sensor = 2;              // the pin that the sensor is atteched to
-int state = LOW;             // by default, no motion detected
-int val = 0;                 // variable to store the sensor status (value)
+int led = 13;                // the pin the LED is atteched to
+int sensor = 2;              // the pin the PIR sensor is atteched to
+int state = LOW;             // LOW = no motion, HIGH = motion
+int val = 0;                 // Stores sensor status
+int buzzerPin = 12;          // The pin the buzzer is attached to
 
 void setup() {
-  pinMode(led, OUTPUT);      // initalize LED as an output
-  pinMode(sensor, INPUT);    // initialize sensor as an input
-  Serial.begin(9600);        // initialize serial
+  // Initialise IO
+  pinMode(led, OUTPUT);
+  pinMode(buzzerPin, OUTPUT);
+  pinMode(sensor, INPUT); 
+
+  Serial.begin(9600);
 }
 
-void loop(){
-  val = digitalRead(sensor);   // read sensor value
-  if (val == HIGH) {           // check if the sensor is HIGH
-    digitalWrite(led, HIGH);   // turn LED ON
-    delay(100);                // delay 100 milliseconds 
+void activateAlarm() {
+  // Turn on the buzzer
+  tone(buzzerPin, 50);
+  // Turn on the LED
+  digitalWrite(led, HIGH);
+}
+
+
+void deactivateAlarm() {
+  // Turn off the buzzer
+  noTone(buzzerPin);
+  // Turn off the LED
+  digitalWrite(led, LOW);
+}
+
+void loop() {
+  // Read sensor status
+  val = digitalRead(sensor);
+
+  // If motion is detected
+  if (val == HIGH) {           
+    activateAlarm();
+    delay(100);                
     
+    // If the motion has been detected for the first time
     if (state == LOW) {
       Serial.println("Motion detected!"); 
-      state = HIGH;       // update variable state to HIGH
+      state = HIGH;       
     }
   } 
   else {
-      digitalWrite(led, LOW); // turn LED OFF
-      delay(200);             // delay 200 milliseconds 
+      deactivateAlarm();
+      delay(200);             
       
       if (state == HIGH){
         Serial.println("Motion stopped!");
-        state = LOW;       // update variable state to LOW
+        state = LOW;       
     }
   }
 }
