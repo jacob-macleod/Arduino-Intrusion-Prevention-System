@@ -7,13 +7,16 @@ int val = 0;                 // Stores sensor status
 int buzzerPin = 12;          // The pin the buzzer is attached to
 Servo eyePivot;              // The servo controlling the eyes
 int pos = 0;                 // The position of eyePivot
+int laserPin = 10;           // The pin of the laser
 
 void setup() {
   // Initialise IO
   pinMode(led, OUTPUT);
   pinMode(buzzerPin, OUTPUT);
   pinMode(sensor, INPUT); 
+  pinMode(laserPin, OUTPUT);
   eyePivot.attach(11);
+  digitalWrite(laserPin, HIGH);
 
   Serial.begin(9600);
 }
@@ -23,6 +26,8 @@ void activateAlarm() {
   tone(buzzerPin, 50);
   // Turn on the LED
   digitalWrite(led, HIGH);
+  // Turn on the laser
+  digitalWrite(laserPin, LOW);
 }
 
 
@@ -31,6 +36,8 @@ void deactivateAlarm() {
   noTone(buzzerPin);
   // Turn off the LED
   digitalWrite(led, LOW);
+  // Turn on the laser
+  digitalWrite(laserPin, HIGH);
 }
 
 void checkPIRSensor () {
